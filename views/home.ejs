@@ -3,4 +3,9 @@
 <h1>Hello</h1>
 <p><%= homeContent %></p>
 
+<% newPosts.forEach(function(newPost) { %>
+  <h1><%= newPost.title %></h1>
+  <p><%= newPost.content %></p>
+<% }); %>
+
 <%- include("partials/footer"); -%>
