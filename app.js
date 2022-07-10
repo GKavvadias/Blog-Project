@@ -14,19 +14,28 @@ let posts = [];
 
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(express.static("public"));
 
 app.get("/", function(req, res) {
-  res.render("home", {homeContent: homeStartingContent, newPosts: posts});
+  res.render("home", {
+    homeContent: homeStartingContent,
+    newPosts: posts
+  });
 });
 
 app.get("/about", function(req, res) {
-  res.render("about", {aboutCont: aboutContent});
+  res.render("about", {
+    aboutCont: aboutContent
+  });
 });
 
 app.get("/contact", function(req, res) {
-  res.render("contact", {contactCont: contactContent});
+  res.render("contact", {
+    contactCont: contactContent
+  });
 });
 
 app.get("/compose", function(req, res) {
@@ -40,6 +49,21 @@ app.post("/compose", function(req, res) {
   };
   posts.push(post);
   res.redirect("/");
+});
+
+app.get("/posts/:postName", function(req, res) {
+  const requestedPostTitle = req.params.postName;
+
+  posts.forEach(function(post) {
+    const storedTitle = post.title;
+    if (requestedPostTitle === storedTitle) {
+      console.log("There is a match!");
+    } else {
+      console.log("There is no match.");
+    }
+  });
+
+
 });
 
 app.listen(3000, function() {
