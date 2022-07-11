@@ -48,6 +48,8 @@ app.post("/compose", function(req, res) {
     title: req.body.postTitle,
     content: req.body.postBody
   };
+  // let truncate = post.content.substring(0, 10);
+  console.log(post.content);
   posts.push(post);
   res.redirect("/");
 });
@@ -61,9 +63,9 @@ app.get("/posts/:postName", function(req, res) {
       console.log("There is a match!");
 
       res.render("post", {
-        newPosts: post
+        newPost: post
       });
-      
+
     } else {
       console.log("There is no match.");
     }
