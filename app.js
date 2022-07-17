@@ -14,8 +14,6 @@ const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rho
 
 const app = express();
 
-let posts = [];
-
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({
@@ -32,9 +30,12 @@ const postSchema = new mongoose.Schema({
 const Post = mongoose.model("Post", postSchema);
 
 app.get("/", function(req, res) {
-  res.render("home", {
-    homeContent: homeStartingContent,
-    newPosts: posts
+
+  Post.find({}, function(err, posts) {
+      res.render("home", {
+        homeContent: homeStartingContent,
+        newPosts: posts
+      });
   });
 });
 
@@ -55,34 +56,26 @@ app.get("/compose", function(req, res) {
 });
 
 app.post("/compose", function(req, res) {
-  // const post = {
-  //   title: req.body.postTitle,
-  //   content: req.body.postBody
-  // };
-  const post = new Post({
+  const newPost = new Post({
     title: req.body.postTitle,
     content: req.body.postBody
   });
-  //posts.push(post);
-  post.save();
-  res.redirect("/");
+  newPost.save(function(err) {
+    if (err) {
+      console.log("Error during saving process");
+    } else {
+        res.redirect("/");
+    }
+  });
 });
 
-app.get("/posts/:postName", function(req, res) {
-  const requestedPostTitle = _.lowerCase(req.params.postName);
+app.get("/posts/:postId", function(req, res) {
+  const requestedPostId = req.params.postId;
 
-  posts.forEach(function(post) {
-    const storedTitle = _.lowerCase(post.title);
-    if (requestedPostTitle === storedTitle) {
-      console.log("There is a match!");
-
+  Post.findOne({_id: requestedPostId}, function(err, newPost) {
       res.render("post", {
-        newPost: post
+        newPost: newPost
       });
-
-    } else {
-      console.log("There is no match.");
-    }
   });
 
 });
